@@ -1,3 +1,4 @@
+#Creating 3 public subnets
 resource "aws_subnet" "public1" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.public_cidr1
@@ -21,7 +22,7 @@ resource "aws_subnet" "public3" {
   map_public_ip_on_launch = true
   tags                    = var.tags
 }
-
+# Creating public RT "r" and give route to IGW
 resource "aws_route_table" "r" {
   vpc_id = aws_vpc.main.id
 
@@ -31,7 +32,7 @@ resource "aws_route_table" "r" {
   }
   tags = var.tags
 }
-
+#Association public subnets with RT
 resource "aws_route_table_association" "public1" {
   subnet_id      = aws_subnet.public1.id
   route_table_id = aws_route_table.r.id
