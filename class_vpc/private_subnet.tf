@@ -1,14 +1,16 @@
-
+#Creating ElasticIP for NATGW , because NATGW works with it.
 resource "aws_eip" "nat" {
   vpc      = true
   tags = var.tags
 }
+#Creating NATGW and association with ElasticIP/location of NATGW in public subnet1
 resource "aws_nat_gateway" "gw" {
   allocation_id = aws_eip.nat.id
   subnet_id     = aws_subnet.public1.id
 
   tags = var.tags
 }
+#Creating 3 Private subnets
 resource "aws_subnet" "private1" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.private_cidr1
@@ -30,6 +32,7 @@ resource "aws_subnet" "private3" {
   map_public_ip_on_launch = true
   tags                    = var.tags
 }
+#Creating Private Route Table
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
   route {
@@ -38,6 +41,7 @@ resource "aws_route_table" "private" {
   }
   tags = var.tags
 }
+#Association Private subnets with RT
 resource "aws_route_table_association" "private1" {
   subnet_id      = aws_subnet.private1.id
   route_table_id = aws_route_table.private.id
